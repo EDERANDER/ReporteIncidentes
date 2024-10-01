@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-BmbxuPwQa2lc/FVzBcNJ7UAyJxM6wuqIj61tLrc4wSX0szH/Ev+nYRRuWlolflfl" crossorigin="anonymous">
+    <script src="jspdf.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/signature_pad@2.3.2/dist/signature_pad.min.js"></script>
+    <script src="app.js"></script>
+    <style>
+      
+        @media (max-width: 768px) {
+            #observaciones {
+                width: 100%;
+                height: 100px; /* Ajusta el alto según tus necesidades */
+                font-size: 10px; /* Ajusta el tamaño de fuente según tus necesidades */
+            }
+        }
+        #observaciones {
+            height: 100px; /* Ajusta la altura según sea necesario */
+            overflow: hidden; /* Oculta el desbordamiento */
+            resize: none; /* Desactiva el redimensionamiento del textarea */
+            box-sizing: border-box; /* Asegura que el padding y el borde se incluyan en el tamaño total */
+        }
+         
+        .sun-text {
+            font-size: 36px; /* Tamaño del texto */
+            font-weight: bold; /* Negrita */
+            color: #ffcc00; /* Color dorado */
+            margin-top: 5%; /* Margen superior */
+            animation: shine 1s infinite; /* Animación */
+        }
+
+        @keyframes shine {
+            0%, 100% {
+                text-shadow: 0 0 20px #ff3131, 0 0 30px #ffcc00, 0 0 40px #ffcc00, 0 0 50px #ffcc00, 0 0 60px #ff3131;
+            }
+            50% {
+                text-shadow: 0 0 10px #ff3131, 0 0 20px #dfdf42, 0 0 30px #dfdf42, 0 0 40px #dfdf42, 0 0 50px #ff3131;
+            }
+        }
+        .sun-text1 {
+            font-size: 36px; /* Tamaño del texto */
+            font-weight: bold; /* Negrita */
+            color: #054f6d; /* Color dorado */
+            margin-top: 5%; /* Margen superior */
+        }
+        .sun-text2 {
+            font-size: 36px; /* Tamaño del texto */
+            font-weight: bold; /* Negrita */
+            color: #87CEEB; /* Color dorado */
+            margin-top: 5%; /* Margen superior */
+        }     
+        
+                /* Estilo base para el textarea con id="comentarios" */
+        #comentarios, #medida_correctiva, #tercer_textarea {
+            border: 2px solid #b53434; /* Borde inicial azul */
+            border-radius: 5px;
+            padding: 10px;
+            transition: border 0.3s ease, box-shadow 0.3s ease; /* Animación suave */
+        }
+        
+        /* Animación cuando los textareas reciben foco */
+        #comentarios:focus, #medida_correctiva:focus, #tercer_textarea:focus {
+            border: 2px solid #6a1485; /* Cambia el borde a verde al hacer foco */
+            box-shadow: 0 0 10px rgba(46, 204, 113, 0.5); /* Sombra verde suave */
+            outline: none; /* Quita el borde predeterminado de foco */
+        }
+        
+
+    </style>
+</head>
+
+<body>
+    <div class="container mt-4">
+        <div class="row">
+            <div class="col-md-8 offset-md-2">
+                <h3 class="sun-text1" style="text-align: center;">Reporte de Incidentes</h3>
+                <hr>
+                <form id="form">
+
+                <!-- primera parte Inicio --> 
+                <div class="row mb-3">
+                        <div class="col-md-9">
+                            <label for="nombre" class="form-label"><Strong>Área Reportante</Strong></label>
+                            <input type="text" class="form-control" id="area_reportante" style="width: 400px;" maxlength="40">
+                        </div>
+                </div>  
+                <div class="row mb-3">
+                    <div class="col-md-9">
+                        <label for="nombre" class="form-label">Nombre Reportante</label>
+                        <input type="text" class="form-control" id="nombre" style="width: 400px;" maxlength="40">
+                    </div>
+                </div> 
+                <div class="row mb-3">
+                    <div class="col-md-9">
+                        <label for="nombre" class="form-label">DNI reportante</label>
+                        <input type="text" class="form-control" id="dni_reportante" style="width: 400px;" maxlength="40">
+                    </div>
+                </div>
+                <div class="row mb-2">
+                    <div class="col-md-7">
+                        <label for="comentarios" class="form-label">Área donde ocurrió el incidente:</label>
+                        <textarea class="form-control" id="area_inc" rows="6" cols="72" maxlength="105" style="font-size: 15px; text-align: justify;" oninput="updateCounter4()"></textarea>
+                        <div id="charCount4" style="margin-top: 10px; font-size: 14px;">
+                            Caracteres restantes: <span id="remainingChars4"><strong>105</strong></span>
+                        </div>
+                    </div>
+                </div>
+                
+
+                    <div class="col-md-9">
+                        <label for="fecha_incidente" class="form-label"><strong>Fecha Incidente</strong></label>
+                        <input type="date" class="form-control" id="fecha_incidente" style="width: 400px;" maxlength="40">
+                    </div>
+                    
+                    <div class="col-md-9 mt-3">
+                        <label for="hora_incidente" class="form-label">Hora Incidente</label>
+                        <input type="time" class="form-control" id="hora_incidente" style="width: 400px;" maxlength="40">
+                    </div>
+
+
+                <label for="tipo_incidente"><strong>Seleccione el tipo de incidente:</strong></label>
+                <br>
+
+                <select id="tipo_incidente" name="tipo_incidente" onchange="mostrarCampoOtro()">
+                    <option value="caida_personas">Caída de Personas</option>
+                    <option value="caida_objetos">Caída de Objetos</option>
+                    <option value="desprendimiento_rocas">Desprendimiento de Rocas</option>
+                    <option value="choques_carga_descarga">Choques Durante Carguío y Descarga de Mineral/Desmonte</option>
+                    <option value="choques_manipuleo">Choques Durante Manipuleo de Materiales</option>
+                    <option value="choques_transito">Choques por Vehículo Motorizado (Tránsito Vehicular)</option>
+                    <option value="atrapado_maquinarias">Atrapado por Maquinarias en Movimiento</option>
+                    <option value="atrapado_chutes">Atrapado en Chutes o Tolvas Durante Desatoro</option>
+                    <option value="atrapado_succion">Atrapado por Succión de Mineral/Desmonte</option>
+                    <option value="atrapado_derrumbe">Atrapado por Derrumbe o Deslizamiento</option>
+                    <option value="atrapado_perforacion">Atrapado o Golpes Durante Perforación</option>
+                    <option value="golpes_detonacion">Golpes por Objetos en Detonación de Explosivos</option>
+                    <option value="golpes_herramientas">Golpes por Herramientas</option>
+                    <option value="exposicion_temperaturas">Exposición a Temperaturas Extremas</option>
+                    <option value="exposicion_energia">Exposición a Energía Eléctrica</option>
+                    <option value="exposicion_radiaciones">Exposición a Radiaciones</option>
+                    <option value="exposicion_tormentas">Exposición a Tormentas Eléctricas</option>
+                    <option value="exposicion_sustancias">Exposición a Sustancias Peligrosas</option>
+                    <option value="exposicion_gases">Exposición a Gases Tóxicos/Asfixiantes</option>
+                    <option value="exposicion_ingerir">Exposición por Ingestión de Alimentos (Intoxicación)</option>
+                    <option value="esfuerzos_excesivos">Esfuerzos Excesivos o Falsos Movimientos</option>
+                    <option value="otros">Otros (Especificar)</option>
+                </select>
+                <div id="campo_otro" style="display: none; margin-top: 10px;">
+                    <label for="otro_tipo"><strong>Especifique (Sea preciso):</strong></label>
+                    <input type="text" id="otro_tipo" name="otro_tipo" maxlength="30">
+                </div>
+                
+                
+
+                
+                <br>
+                <br>
+                
+
+                  <div style="text-align: left;">
+                    <label style="font-weight: bold;">Causas del Incidente:</label>
+                    <div>
+                      <input type="radio" name="causas_incidente" value="Acto sub estandar"> Acto sub estandar
+                    </div>
+
+                    <div>
+                      <input type="radio" name="causas_incidente" value="Condicion"> Condicion sub estadar
+                    </div>
+                    
+                    <div >
+                      <input type="radio" name="causas_incidente" value="Incidente"> Incidente
+                    </div>
+                    <div>
+                        <input type="radio" name="causas_incidente" value="Incidente ambiental"> Incidente ambiental
+                    </div>
+                  </div>
+
+                  <div style="text-align: left;">
+                    <label style="font-weight: bold;">Nivel de Riesgo:</label>
+                    <div style="margin-bottom: 10px;">
+                      <input type="radio" name="nivel_riesgo" value="Alto"> Alto
+                    </div>
+                    <div style="margin-bottom: 10px;">
+                      <input type="radio" name="nivel_riesgo" value="Medio"> Medio
+                    </div>
+                    <div>
+                      <input type="radio" name="nivel_riesgo" value="Bajo"> Bajo
+                    </div>
+                  </div>
+                <!-- Final parte Inicio -->
+
+
+
+
+
+
+
+                  <br><br>
+                  <div class="row mb-4">
+                    <div class="col-md-10">
+                        <label for="comentarios" class="form-label">Descripcion:</label>
+                        <textarea class="form-control" id="comentarios" rows="6" cols="72" maxlength="600" style="font-size: 15px; text-align: justify;" oninput="updateCounter1()"></textarea>
+                        <div id="charCount1" style="margin-top: 10px; font-size: 14px;">
+                            Caracteres restantes: <span id="remainingChars1"><strong>600</strong></span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="row mb-4">
+                    <div class="col-md-9">
+                        <label for="medida_correctiva" class="form-label">Medida Correctiva:</label>
+                        <textarea class="form-control" id="medida_correctiva" rows="5" cols="40" maxlength="300" style="font-size: 15px; text-align: justify;" oninput="updateCounter2()"></textarea>
+                        <div id="charCount2" style="margin-top: 10px; font-size: 14px;">
+                            Caracteres restantes: <span id="remainingChars2"><strong>300</strong></span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row mb-4">
+                    <div class="col-md-8">
+                        <label for="tercer_textarea" class="form-label">Responsable:</label>
+                        <textarea class="form-control" id="tercer_textarea" rows="5" cols="40" maxlength="150" style="font-size: 15px; text-align: justify;" oninput="updateCounter3()"></textarea>
+                        <div id="charCount3" style="margin-top: 10px; font-size: 14px;">
+                            Caracteres restantes: <span id="remainingChars3">150</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+                    <!-- Títulos de las áreas -->
+                    <div style="width: 48%; text-align: center;">
+                        <strong>Área seguridad y salud ocupacional (Firma)</strong>
+                    </div>
+                    <div style="width: 48%; text-align: center;">
+                        <strong>Área responsable (Firma)</strong>
+                    </div>
+                </div>
+                
+                <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+                    <!-- Primer campo de Nombre y DNI -->
+                    <div style="width: 48%;">
+                        <label for="nombre1">Nombre:</label>
+                        <input type="text" id="nombre1" name="nombre1" style="width: 100%;">
+                
+                        <label for="dni1" style="margin-top: 10px;">DNI:</label>
+                        <input type="text" id="dni1" name="dni1" style="width: 100%;">
+                    </div>
+                
+                    <!-- Segundo campo de Nombre y DNI -->
+                    <div style="width: 48%;">
+                        <label for="nombre2">Nombre:</label>
+                        <input type="text" id="nombre2" name="nombre2" style="width: 100%;">
+                
+                        <label for="dni2" style="margin-top: 10px;">DNI:</label>
+                        <input type="text" id="dni2" name="dni2" style="width: 100%;">
+                    </div>
+                </div>
+                
+                
+                
+                <script>
+                    function updateCounter1() {
+                        var textarea = document.getElementById('comentarios');
+                        var remainingChars = document.getElementById('remainingChars1');
+                        remainingChars.textContent = 600 - textarea.value.length;
+                    }
+                    function updateCounter2() {
+                        var textarea = document.getElementById('medida_correctiva');
+                        var remainingChars = document.getElementById('remainingChars2');
+                        remainingChars.textContent = 300 - textarea.value.length;
+                    }
+                    function updateCounter3() {
+                        var textarea = document.getElementById('tercer_textarea');
+                        var remainingChars = document.getElementById('remainingChars3');
+                        remainingChars.textContent = 150 - textarea.value.length;
+                    }
+                    function updateCounter4() {
+                        var textarea = document.getElementById('area_inc');
+                        var remainingChars4 = document.getElementById('remainingChars4');
+                        remainingChars4.textContent = 105 - textarea.value.length; // Cambiado a 105
+                    }
+                    
+                </script>
+                
+                
+
+
+                <!-- Script funciones basicas -->
+                
+                <!-- FIN SCRIPT FUNCIONES BASICAS -->
+
+                    <button type="submit" class="btn btn-primary mb-4" style="background-color: firebrick;">Generar PDF</button>
+
+                    
+                </form>
+            </div>
+        </div>
+    </div>
+
+</body>
+
+</html>
